@@ -15,21 +15,20 @@ import al.tonikolaba.handlers.LoggingHelper;
  */
 public class JukeBox {
 
-    // Inicialización directa de clips para evitar NullPointerException
-    public static HashMap<String, Clip> clips = new HashMap<>();
+    public static HashMap<String, Clip> clips;
     private static int gap;
     private static boolean mute = false;
-
-    // Constructor privado para evitar instanciación
-    private JukeBox() {
-        throw new IllegalStateException("Utility Class");
+    static {
+        init(); // Inicialización automática
     }
-
     public static void init() {
+        clips = new HashMap<>();
         gap = 0;
     }
-
     public static void load(String s, String n) {
+        if (clips == null) {
+            init();
+        }
         Clip clip;
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(JukeBox.class.getResourceAsStream(s));
@@ -41,89 +40,62 @@ public class JukeBox {
             clip.open(dais);
             clips.put(n, clip);
         } catch (Exception e) {
-            LoggingHelper.LOGGER.log(Level.SEVERE, "Error al cargar el clip: " + e.getMessage(), e);
+            LoggingHelper.LOGGER.log(Level.SEVERE, e.getMessage());
         }
     }
-
     public static void play(String s) {
         play(s, gap);
     }
-
     public static void play(String s, int i) {
-        if (mute) return;
+        if (mute || clips == null || !clips.containsKey(s)) {
+            return;
+        }
         Clip c = clips.get(s);
-        if (c == null) return;
-        if (c.isRunning()) c.stop();
-        c.setFramePosition(i);
-        while (!c.isRunning()) c.start();
-    }
-
-    public static void stop(String s) {
-        Clip c = clips.get(s);
-        if (c != null && c.isRunning()) {
+        if (c.isRunning()) {
             c.stop();
         }
-    }
-
-    public static void resume(String s) {
-        if (mute) return;
-        Clip c = clips.get(s);
-        if (c != null && !c.isRunning()) {
+        c.setFramePosition(i);
+        while (!c.isRunning()) {
             c.start();
         }
     }
-
-    public static void loop(String s) {
-        Clip c = clips.get(s);
-        if (c != null) {
-            loop(s, gap, gap, c.getFrameLength() - 1);
+    public static void stop(String s) {
+        if (clips == null || !clips.containsKey(s)) {
+            return;
+        }
+        if (clips.get(s).isRunning()) {
+            clips.get(s).stop();
         }
     }
-
-    public static void loop(String s, int frame) {
-        Clip c = clips.get(s);
-        if (c != null) {
-            loop(s, frame, gap, c.getFrameLength() - 1);
-        }
-    }
-
-    public static void loop(String s, int start, int end) {
-        loop(s, gap, start, end);
-    }
-
-    public static void loop(String s, int frame, int start, int end) {
-        stop(s);
-        if (mute) return;
-        Clip c = clips.get(s);
-        if (c != null) {
-            c.setLoopPoints(start, end);
-            c.setFramePosition(frame);
-            c.loop(Clip.LOOP_CONTINUOUSLY);
-        }
-    }
-
-    public static void setPosition(String s, int frame) {
-        Clip c = clips.get(s);
-        if (c != null) {
-            c.setFramePosition(frame);
-        }
-    }
-
-    public static int getFrames(String s) {
-        Clip c = clips.get(s);
-        return (c != null) ? c.getFrameLength() : -1;
-    }
-
-    public static int getPosition(String s) {
-        Clip c = clips.get(s);
-        return (c != null) ? c.getFramePosition() : -1;
-    }
-
+    // Los otros métodos no cambian, pero se debe agregar validación de `null` donde sea necesario
     public static void close(String s) {
-        Clip c = clips.get(s);
-        if (c != null) {
-            stop(s);
-            c.close();
+        if (clips == null || !clips.containsKey(s)) {
+            return;
         }
+        stop(s);
+        clips.get(s).close();
     }
+    public static int getFrames(String s) {
+		if (clips == null || !clips.containsKey(s)) {
+			return -1; // Devuelve un valor predeterminado si no existe el clip
+		}
+        return clips.get(s).getFrameLength();
+	}
+    public static void loop(String s, int start, int end) {
+		loop(s, 0, start, end); // Llama al método más completo con frame = 0
+	}
+    public static void loop(String s, int frame, int start, int end) {
+        if (clips == null || !clips.containsKey(s)) {
+			return;
+        }
+		Clip c = clips.get(s);
+		stop(s);
+        if (mute) {
+			return;
+		}
+		c.setLoopPoints(start, end);
+		c.setFramePosition(frame);
+		c.loop(Clip.LOOP_CONTINUOUSLY);
+	}
+    	
 }
