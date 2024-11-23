@@ -5,12 +5,16 @@ import javax.imageio.ImageIO;
 import al.tonikolaba.tilemap.TileMap;
 
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author ArtOfSoul
  */
 
 public class FireBall extends MapObject {
+
+    private static final Logger LOGGER = Logger.getLogger(FireBall.class.getName());
 
     private boolean hit;
     private boolean remove;
@@ -34,7 +38,6 @@ public class FireBall extends MapObject {
 
         // load sprites
         try {
-
             BufferedImage spritesheet = ImageIO.read(
                     getClass().getResourceAsStream(
                             "/Sprites/Player/fireball.gif"
@@ -65,7 +68,7 @@ public class FireBall extends MapObject {
             animation.setDelay(4);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error loading fireball sprites", e);
         }
 
     }
@@ -102,40 +105,6 @@ public class FireBall extends MapObject {
 
     }
 
-    //Draw-Method is inherited.
+    // Draw-Method is inherited.
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

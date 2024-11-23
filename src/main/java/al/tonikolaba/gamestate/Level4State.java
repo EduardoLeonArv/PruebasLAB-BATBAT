@@ -19,6 +19,7 @@ import al.tonikolaba.entity.enemies.RedEnergy;
 import al.tonikolaba.handlers.Keys;
 import al.tonikolaba.main.GamePanel;
 import al.tonikolaba.tilemap.Background;
+import java.security.SecureRandom;
 
 /**
  * @author N.Kolaba
@@ -26,6 +27,7 @@ import al.tonikolaba.tilemap.Background;
 
 public class Level4State extends GameState {
 
+	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 	private static final String LEVEL_BOSS_MUSIC_NAME = "level1boss";
 	private ArrayList<EnergyParticle> energyParticles;
 	private Piece tlp;
@@ -357,7 +359,8 @@ public class Level4State extends GameState {
 			}
 		}
 		if (eventCount > 60 && eventCount < 180) {
-			energyParticles.add(new EnergyParticle(tileMap, 270, 353, (int) (Math.random() * 4))); // vendi ku fillon te
+			energyParticles.add(new EnergyParticle(tileMap, 270, 353, (int) (SECURE_RANDOM.nextDouble() * 4)));
+			// vendi ku fillon te
 																									// dalin drita
 		}
 		if (eventCount >= 160 && eventCount <= 180) {
@@ -392,7 +395,8 @@ public class Level4State extends GameState {
 			for (int i = 0; i < 20; i++) {
 				de = new RedEnergy(tileMap);
 				de.setPosition(270, 395);
-				de.setVector(Math.random() * 10 - 5, Math.random() * -2 - 3);
+				de.setVector(SECURE_RANDOM.nextDouble() * 10 - 5, SECURE_RANDOM.nextDouble() * -2 - 3);
+
 				enemies.add(de);
 			}
 		}
