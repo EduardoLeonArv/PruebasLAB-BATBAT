@@ -3,6 +3,7 @@ package al.tonikolaba.entity.enemies;
 import al.tonikolaba.entity.Enemy;
 import al.tonikolaba.handlers.Content;
 import al.tonikolaba.tilemap.TileMap;
+import java.security.SecureRandom;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,6 +14,7 @@ import java.awt.image.BufferedImage;
 
 public class Zogu extends Enemy {
 
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private BufferedImage[] idleSprites;
 
     private int tick;
@@ -39,8 +41,8 @@ public class Zogu extends Enemy {
         animation.setDelay(4);
 
         tick = 0;
-        a = Math.random() * 0.06 + 0.07;
-        b = Math.random() * 0.06 + 0.07;
+        a = SECURE_RANDOM.nextDouble() * 0.06 + 0.07;
+        b = SECURE_RANDOM.nextDouble() * 0.06 + 0.07;
 
     }
 

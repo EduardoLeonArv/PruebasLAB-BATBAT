@@ -2,6 +2,7 @@ package al.tonikolaba.entity;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -9,11 +10,17 @@ import javax.imageio.ImageIO;
 import al.tonikolaba.entity.enemies.RedEnergy;
 import al.tonikolaba.tilemap.TileMap;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  * @author N. Kolaba
  */
 
 public class Spirit extends Enemy {
+
+	/*Agregamos las modificaciones para solvertar security hotspots*/
+	private static final Logger LOGGER = Logger.getLogger(Spirit.class.getName());
+	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
 	public BufferedImage[] sprites;
 	private Player player;
@@ -63,8 +70,9 @@ public class Spirit extends Enemy {
 				sprites[i] = spritesheet.getSubimage(i * width, 0, width, height);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Error loading sprites", e);
 		}
+
 
 		damage = 1;
 
@@ -184,7 +192,7 @@ public class Spirit extends Enemy {
 				RedEnergy de = new RedEnergy(tileMap);
 				de.setType(RedEnergy.GRAVITY);
 				de.setPosition(x, y);
-				int dir = Math.random() < 0.5 ? 1 : -1;
+				int dir = SECURE_RANDOM.nextBoolean() ? 1 : -1;
 				de.setVector(dir, 0);
 				enemies.add(de);
 			}

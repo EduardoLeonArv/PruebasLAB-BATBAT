@@ -9,7 +9,11 @@ import java.awt.image.BufferedImage;
  * @author ArtOfSoul
  */
 
+import java.security.SecureRandom;
+
 public class EnergyParticle extends MapObject {
+
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     public static final int ENERGY_UP = 0;
     public static final int ENERGY_LEFT = 1;
@@ -23,8 +27,10 @@ public class EnergyParticle extends MapObject {
         super(tm);
         this.x = x;
         this.y = y;
-        double d1 = Math.random() * 2.5 - 1.25;
-        double d2 = -Math.random() - 0.8;
+
+        double d1 = SECURE_RANDOM.nextDouble() * 2.5 - 1.25;
+        double d2 = -SECURE_RANDOM.nextDouble() - 0.8;
+
         if (dir == ENERGY_UP) {
             dx = d1;
             dy = d2;
@@ -56,5 +62,4 @@ public class EnergyParticle extends MapObject {
     public boolean shouldRemove() {
         return remove;
     }
-
 }
