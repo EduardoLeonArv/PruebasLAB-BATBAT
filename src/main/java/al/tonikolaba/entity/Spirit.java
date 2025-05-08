@@ -64,7 +64,9 @@ public class Spirit extends Enemy {
 		moveSpeed = 1.4;
 
 		try {
-			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Enemies/Spirit.gif"));
+			BufferedImage spritesheet = ImageIO.read(
+				getClass().getResourceAsStream("/Sprites/Enemies/Spirit.gif")
+			);
 			sprites = new BufferedImage[4];
 			for (int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(i * width, 0, width, height);
